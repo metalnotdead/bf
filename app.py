@@ -101,14 +101,14 @@ def update_scatter(n_clicks, symbol):
     prophet_df = df.reset_index()[["Date", "Close"]]
     prophet_df.columns = ["ds", "y"]
 
+    # Remove timezone from the "ds" column
+    prophet_df["ds"] = prophet_df["ds"].dt.tz_localize(None)
+
     m = Prophet()
     m.fit(prophet_df)
     future = m.make_future_dataframe(periods=90)
     forecast = m.predict(future)
     forecast1 = forecast.set_index("ds")[datetime.now():].copy()
-
-    # Remove timezone from the forecast1 DataFrame
-    forecast1.index = forecast1.index.tz_localize(None)
 
     historic = go.Scatter(
         x=df.index,
