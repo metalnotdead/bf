@@ -1,7 +1,6 @@
 import os
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 from dash.dependencies import Input, Output
 import pandas as pd
 from datetime import datetime
@@ -10,7 +9,7 @@ from prophet import Prophet
 import plotly.graph_objects as go
 import flask
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 colors = {
     'background': '#191414',
