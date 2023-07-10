@@ -9,8 +9,8 @@ from prophet import Prophet
 import plotly.graph_objects as go
 import flask
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
-
+app = dash.Dash(__name__)
+server = app.server
 colors = {
     'background': '#191414',
     'text': '#466ec3'

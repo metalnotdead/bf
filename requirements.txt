@@ -3,4 +3,4 @@ pandas
 yfinance
 prophet
 plotly
-waitress
+gunicorn
