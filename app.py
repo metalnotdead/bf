@@ -38,13 +38,12 @@ app.layout = html.Div(
         ),
 
         html.Div(
-            children='Stock price forecasting chart for next 90 days.',
+            children='Stock price forecasting chart for the next 90 days.',
             style={
                 'textAlign': 'center',
                 'color': colors['text'],
                 'fontSize': '1.5rem',
                 'marginTop': '1rem',
-                
             }
         ),
 
@@ -59,27 +58,7 @@ app.layout = html.Div(
                 ),
                 html.Label(
                     [
-                        html.Span('E', style={'transition-delay': '0ms'}),
-                        html.Span('n', style={'transition-delay': '50ms'}),
-                        html.Span('t', style={'transition-delay': '100ms'}),
-                        html.Span('e', style={'transition-delay': '150ms'}),
-                        html.Span('r', style={'transition-delay': '200ms'}),
-                        html.Span(' ', style={'transition-delay': '250ms'}),
-                        html.Span('a', style={'transition-delay': '300ms'}),
-                        html.Span(' ', style={'transition-delay': '350ms'}),
-                        html.Span('s', style={'transition-delay': '400ms'}),
-                        html.Span('t', style={'transition-delay': '450ms'}),
-                        html.Span('o', style={'transition-delay': '500ms'}),
-                        html.Span('c', style={'transition-delay': '550ms'}),
-                        html.Span('k', style={'transition-delay': '600ms'}),
-                        html.Span(' ', style={'transition-delay': '650ms'}),
-                        html.Span('s', style={'transition-delay': '700ms'}),
-                        html.Span('y', style={'transition-delay': '750ms'}),
-                        html.Span('m', style={'transition-delay': '800ms'}),
-                        html.Span('b', style={'transition-delay': '850ms'}),
-                        html.Span('o', style={'transition-delay': '900ms'}),
-                        html.Span('l', style={'transition-delay': '950ms'}),
-                        html.Span(':', style={'transition-delay': '1000ms'}),
+                        html.Span('Enter a stock symbol:', style={'transition-delay': '0ms'}),
                     ],
                     style={'color': colors['text'], 'fontSize': '1.5rem'}
                 )
@@ -119,17 +98,14 @@ def update_scatter(n_clicks, symbol):
         ticker_data = yf.Ticker(symbol)
         df = ticker_data.history(period='1d', start=datetime(2015, 1, 1), end=datetime.now())
 
-    prophet_df = df.copy()
-    prophet_df.reset_index(inplace=True)
-    prophet_df = prophet_df.rename(columns={"Date": "ds", "Close": "y"})
+    prophet_df = df.reset_index()[["Date", "Close"]]
+    prophet_df.columns = ["ds", "y"]
 
     m = Prophet()
     m.fit(prophet_df)
     future = m.make_future_dataframe(periods=90)
     forecast = m.predict(future)
-    forecast = forecast.rename(columns={"ds": "Date"})
-    forecast1 = forecast.set_index("Date")
-    forecast1 = forecast1[datetime.now():]
+    forecast1 = forecast.set_index("ds")[datetime.now():]
 
     historic = go.Scatter(
         x=df.index,
@@ -169,7 +145,7 @@ def update_scatter(n_clicks, symbol):
     figure = {
         'data': data,
         'layout': {
-            'title': str(symbol) + " closing value",
+            'title': f"{symbol} closing value",
             'plot_bgcolor': colors['background'],
             'paper_bgcolor': colors['background'],
             'font': {
