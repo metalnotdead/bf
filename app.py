@@ -1,7 +1,7 @@
 import os
 import dash
 from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import pandas as pd
 from datetime import datetime
 import yfinance as yf
@@ -75,20 +75,25 @@ app.layout = html.Div(
         html.Div(
             style={'flex': '1'},
             children=[
-                # Plotly stock graph
-                dcc.Graph(
-                    id='graph_scatter',
+                dcc.Loading(
+                    id="loading",
+                    type="circle",
+                    children=[
+                        # Plotly stock graph
+                        dcc.Graph(
+                            id='graph_scatter',
+                        )
+                    ]
                 )
             ]
         )
     ]
 )
 
-# app callback to update stock closing values
 @app.callback(
     Output('graph_scatter', 'figure'),
     [Input('submit_button', 'n_clicks')],
-    [dash.dependencies.State('input_symbol', 'value')]
+    [State('input_symbol', 'value')]
 )
 def update_scatter(n_clicks, symbol):
     if n_clicks == 0:
