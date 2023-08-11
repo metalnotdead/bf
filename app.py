@@ -32,7 +32,7 @@ app.layout = html.Div(
             style={
                 'textAlign': 'center',
                 'color': colors['text'],
-                'fontSize': '4rem',
+                'fontSize': '2rem',
                 'marginTop': '2rem',
             }
         ),
